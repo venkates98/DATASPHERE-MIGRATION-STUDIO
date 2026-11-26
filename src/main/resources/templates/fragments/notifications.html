@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Toast host plus server-side flash messages (flashSuccess / flashInfo / flashWarning / flashError). -->
+<div th:fragment="notifications">
+    <div class="toast-container position-fixed top-0 end-0 p-3 ds-toasts" id="ds-toast-container"
+         aria-live="polite" aria-atomic="true"></div>
+    <div hidden>
+        <span th:if="${flashSuccess != null}" data-ds-flash="success" th:data-message="${flashSuccess}"></span>
+        <span th:if="${flashInfo != null}" data-ds-flash="info" th:data-message="${flashInfo}"></span>
+        <span th:if="${flashWarning != null}" data-ds-flash="warning" th:data-message="${flashWarning}"></span>
+        <span th:if="${flashError != null}" data-ds-flash="error" th:data-message="${flashError}"></span>
+    </div>
+</div>
+</body>
+</html>

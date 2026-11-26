@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<body>
+<div layout:fragment="content">
+
+    <div class="ds-callout ds-callout-info" role="note">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <div>
+            <strong>Session data only.</strong>
+            Everything on this page is held in memory and disappears when the application restarts.
+            No migration history is stored in a database, and nothing here is a compliant audit record.
+        </div>
+    </div>
+
+    <section aria-labelledby="overview-heading" class="mb-4">
+        <h2 id="overview-heading" class="visually-hidden">Overview</h2>
+        <div class="row g-3">
+            <div class="col-sm-6 col-xl-3">
+                <div class="ds-stat">
+                    <div class="ds-stat-icon ds-tone-blue"><i class="bi bi-plug" aria-hidden="true"></i></div>
+                    <div>
+                        <div class="ds-stat-label">Connection profiles</div>
+                        <div class="ds-stat-value" th:text="${summary.metrics.connectionProfiles}">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="ds-stat">
+                    <div class="ds-stat-icon ds-tone-teal"><i class="bi bi-lightning-charge" aria-hidden="true"></i></div>
+                    <div>
+                        <div class="ds-stat-label">Connection tests</div>
+                        <div class="ds-stat-value">
+                            <span class="text-success" th:text="${summary.metrics.connectionTestsSucceeded}">0</span>
+                            <span class="ds-stat-sep">/</span>
+                            <span class="text-danger" th:text="${summary.metrics.connectionTestsFailed}">0</span>
+                        </div>
+                        <div class="ds-stat-hint">passed / failed</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="ds-stat">
+                    <div class="ds-stat-icon ds-tone-navy"><i class="bi bi-list-task" aria-hidden="true"></i></div>
+                    <div>
+                        <div class="ds-stat-label">Configured jobs</div>
+                        <div class="ds-stat-value" th:text="${summary.metrics.configuredJobs}">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="ds-stat">
+                    <div class="ds-stat-icon ds-tone-amber"><i class="bi bi-activity" aria-hidden="true"></i></div>
+                    <div>
+                        <div class="ds-stat-label">Current migration status</div>
+                        <div class="ds-stat-value ds-stat-value-sm" th:text="${summary.currentStatus}">Idle</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ds-card" aria-labelledby="records-heading">
+        <div class="ds-card-header">
+            <h2 id="records-heading" class="ds-card-title">Records this session</h2>
+        </div>
+        <div class="ds-card-body">
+            <dl class="ds-counters">
+                <div><dt>Read</dt><dd th:text="${#numbers.formatInteger(summary.metrics.recordsRead, 1, 'COMMA')}">0</dd></div>
+                <div><dt>Inserted</dt><dd class="text-success" th:text="${#numbers.formatInteger(summary.metrics.recordsInserted, 1, 'COMMA')}">0</dd></div>
+                <div><dt>Updated</dt><dd th:text="${#numbers.formatInteger(summary.metrics.recordsUpdated, 1, 'COMMA')}">0</dd></div>
+                <div><dt>Skipped</dt><dd class="text-warning-emphasis" th:text="${#numbers.formatInteger(summary.metrics.recordsSkipped, 1, 'COMMA')}">0</dd></div>
+                <div><dt>Failed</dt><dd class="text-danger" th:text="${#numbers.formatInteger(summary.metrics.recordsFailed, 1, 'COMMA')}">0</dd></div>
+            </dl>
+        </div>
+    </section>
+
+    <div class="row g-3">
+        <div class="col-xl-5">
+            <section class="ds-card h-100" aria-labelledby="actions-heading">
+                <div class="ds-card-header"><h2 id="actions-heading" class="ds-card-title">Quick actions</h2></div>
+                <div class="ds-card-body">
+                    <ul class="ds-op-list">
+                        <li th:each="action, stat : ${summary.quickActions}" class="ds-op">
+                            <div>
+                                <a th:if="${action.enabled}" class="btn btn-primary ds-op-btn" th:href="@{${action.href}}">
+                                    <i class="bi" th:classappend="${action.icon}" aria-hidden="true"></i>
+                                    <span th:text="${action.label}">Action</span>
+                                </a>
+                                <button th:unless="${action.enabled}" type="button" class="btn btn-outline-secondary ds-op-btn"
+                                        disabled th:attr="aria-describedby='qa-reason-' + ${stat.index}">
+                                    <i class="bi" th:classappend="${action.icon}" aria-hidden="true"></i>
+                                    <span th:text="${action.label}">Action</span>
+                                </button>
+                            </div>
+                            <div class="ds-op-text" th:unless="${action.enabled}">
+                                <div th:id="'qa-reason-' + ${stat.index}" class="ds-op-reason">
+                                    <i class="bi bi-lock" aria-hidden="true"></i>
+                                    <span th:text="${action.disabledReason}">Reason</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xl-7">
+            <section class="ds-card h-100" aria-labelledby="activity-heading">
+                <div class="ds-card-header">
+                    <h2 id="activity-heading" class="ds-card-title">Recent activity</h2>
+                    <span class="ds-chip ds-chip-muted">In memory</span>
+                </div>
+                <div class="ds-card-body">
+                    <div th:if="${summary.recentActivity.isEmpty()}" class="ds-empty">
+                        <i class="bi bi-inbox" aria-hidden="true"></i>
+                        <div class="ds-empty-title">No activity yet</div>
+                        <p>Migration activity from this session will appear here. Start by creating a source and a
+                            target connection profile on the <a th:href="@{/projects}">Migration Projects</a> page.</p>
+                    </div>
+                    <div th:unless="${summary.recentActivity.isEmpty()}" class="table-responsive">
+                        <table class="table ds-table align-middle">
+                            <thead>
+                            <tr><th scope="col">Time</th><th scope="col">Event</th><th scope="col">Job</th><th scope="col">Result</th></tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="event : ${summary.recentActivity}">
+                                <td class="text-nowrap" th:text="${event.displayTime()}">time</td>
+                                <td th:text="${event.message}">message</td>
+                                <td th:text="${event.jobId != null ? event.jobId : '—'}">job</td>
+                                <td><span class="ds-chip ds-chip-muted" th:text="${event.result}">OK</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<body>
+<div layout:fragment="content">
+
+    <div th:if="${devProfileActive}" class="ds-callout ds-callout-warning" role="alert">
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        <div>
+            <strong>Development profile active.</strong>
+            A development-only administrator account is enabled. Never run the <code>dev</code> profile in a shared
+            or production environment.
+        </div>
+    </div>
+    <div th:if="${!secureCookie and !devProfileActive}" class="ds-callout ds-callout-warning" role="alert">
+        <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+        <div>
+            <strong>Session cookie is not marked Secure.</strong>
+            Serve the application over HTTPS and set <code>DATASPHERE_COOKIE_SECURE=true</code> (or use the
+            <code>prod</code> profile).
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <section class="ds-card h-100" aria-labelledby="sec-heading">
+                <div class="ds-card-header"><h2 id="sec-heading" class="ds-card-title">Security policy</h2></div>
+                <div class="ds-card-body">
+                    <dl class="ds-kv">
+                        <dt>Session timeout</dt><dd><span th:text="${sessionTimeoutMinutes}">30</span> minutes of inactivity</dd>
+                        <dt>Session cookie</dt><dd>HttpOnly, SameSite=Lax, Secure: <strong th:text="${secureCookie ? 'yes' : 'no'}">no</strong></dd>
+                        <dt>Login throttling</dt><dd><span th:text="${login.maxAttempts}">5</span> failed attempts, then locked for <span th:text="${lockoutMinutes}">15</span> minutes (per client address and per username)</dd>
+                        <dt>CSRF protection</dt><dd>Enabled for every state-changing request</dd>
+                        <dt>Remember-me</dt><dd>Disabled (not offered, to avoid long-lived credentials)</dd>
+                        <dt>Password storage</dt><dd>BCrypt hash supplied via environment or the development profile; never plain text</dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+        <div class="col-lg-6">
+            <section class="ds-card h-100" aria-labelledby="lim-heading">
+                <div class="ds-card-header"><h2 id="lim-heading" class="ds-card-title">Migration limits</h2></div>
+                <div class="ds-card-body">
+                    <dl class="ds-kv">
+                        <dt>Maximum tables per job</dt><dd th:text="${limits.maxTablesPerJob}">50</dd>
+                        <dt>Maximum batch size</dt><dd th:text="${limits.maxBatchSize}">10000</dd>
+                        <dt>Default batch size</dt><dd th:text="${limits.defaultBatchSize}">1000</dd>
+                        <dt>Default fetch size</dt><dd th:text="${limits.defaultFetchSize}">1000</dd>
+                        <dt>Concurrent jobs</dt><dd th:text="${limits.maxConcurrentJobs}">2</dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="mt-3"><div th:replace="~{fragments/guide :: guide(${guide})}"></div></div>
+</div>
+</body>
+</html>

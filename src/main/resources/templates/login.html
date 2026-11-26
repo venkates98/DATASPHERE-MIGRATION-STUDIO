@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Sign in · DataSphere Migration Studio</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.min.css}">
+    <link rel="stylesheet" th:href="@{/css/tokens.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body class="ds-login-body">
+<a class="ds-skip-link" href="#login-form">Skip to sign-in form</a>
+
+<div class="ds-login">
+    <!-- Brand / illustration panel -->
+    <section class="ds-login-hero" aria-label="About DataSphere Migration Studio">
+        <div class="ds-hero-inner">
+            <div class="ds-hero-brand">
+                <svg th:replace="~{fragments/brand :: logo}"></svg>
+                <span class="ds-hero-brand-name">DataSphere</span>
+            </div>
+            <h1 class="ds-hero-title">Migration Studio</h1>
+            <p class="ds-hero-tagline">Connect. Map. Validate. Migrate.</p>
+
+            <!-- Decorative illustration: source database streaming records to a target database -->
+            <svg class="ds-hero-art" viewBox="0 0 520 260" role="img" aria-hidden="true" focusable="false"
+                 xmlns="http://www.w3.org/2000/svg">
+                <circle class="art-orbit" cx="260" cy="130" r="118" fill="none" stroke-width="1.5"/>
+                <circle class="art-orbit art-orbit-2" cx="260" cy="130" r="86" fill="none" stroke-width="1"/>
+
+                <g class="art-db art-db-source">
+                    <path class="art-db-body" d="M60 70v80c0 16 24 28 54 28s54-12 54-28V70z"/>
+                    <ellipse class="art-db-top" cx="114" cy="70" rx="54" ry="20"/>
+                    <path class="art-db-line" d="M60 100c0 16 24 28 54 28s54-12 54-28" fill="none" stroke-width="2"/>
+                    <path class="art-db-line" d="M60 130c0 16 24 28 54 28s54-12 54-28" fill="none" stroke-width="2"/>
+                </g>
+
+                <g class="art-db art-db-target">
+                    <path class="art-db-body art-db-body-teal" d="M352 70v80c0 16 24 28 54 28s54-12 54-28V70z"/>
+                    <ellipse class="art-db-top art-db-top-teal" cx="406" cy="70" rx="54" ry="20"/>
+                    <path class="art-db-line" d="M352 100c0 16 24 28 54 28s54-12 54-28" fill="none" stroke-width="2"/>
+                    <path class="art-db-line" d="M352 130c0 16 24 28 54 28s54-12 54-28" fill="none" stroke-width="2"/>
+                </g>
+
+                <g class="art-flow">
+                    <path class="art-flow-line" d="M184 124h152" fill="none" stroke-width="2" stroke-dasharray="6 8"/>
+                    <path class="art-flow-arrow" d="M330 114l14 10-14 10z"/>
+                    <rect class="art-packet art-packet-1" x="196" y="116" width="14" height="14" rx="3"/>
+                    <rect class="art-packet art-packet-2" x="196" y="116" width="14" height="14" rx="3"/>
+                    <rect class="art-packet art-packet-3" x="196" y="116" width="14" height="14" rx="3"/>
+                </g>
+                <text class="art-label" x="114" y="214" text-anchor="middle">SOURCE</text>
+                <text class="art-label" x="406" y="214" text-anchor="middle">TARGET</text>
+            </svg>
+
+            <ul class="ds-hero-points">
+                <li><i class="bi bi-check2-circle" aria-hidden="true"></i> SQL Server, Oracle, PostgreSQL and MySQL, in any direction</li>
+                <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Explicit mappings, never silent assumptions</li>
+                <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Dry run, batch control and reconciliation</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Sign-in panel -->
+    <main class="ds-login-panel">
+        <div class="ds-login-card">
+            <div class="ds-login-card-brand d-lg-none">
+                <svg th:replace="~{fragments/brand :: logo}"></svg>
+                <span>DataSphere Migration Studio</span>
+            </div>
+            <h2 class="ds-login-heading">Sign in</h2>
+            <p class="ds-login-sub">Use your administrator account to continue.</p>
+
+            <div th:if="${param.error}" class="alert alert-danger ds-alert" role="alert" id="login-alert">
+                <i class="bi bi-x-octagon-fill" aria-hidden="true"></i>
+                <div><strong>Sign-in failed.</strong> The username or password is incorrect. Check both and try again.</div>
+            </div>
+            <div th:if="${param.locked}" class="alert alert-warning ds-alert" role="alert" id="login-alert-locked">
+                <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                <div><strong>Too many attempts.</strong> Sign-in is temporarily locked. Wait a few minutes and try again.</div>
+            </div>
+            <div th:if="${param.expired}" class="alert alert-info ds-alert" role="status">
+                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                <div><strong>Session expired.</strong> For your security you were signed out. Please sign in again.</div>
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success ds-alert" role="status">
+                <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                <div><strong>Signed out.</strong> You have been signed out successfully.</div>
+            </div>
+
+            <form id="login-form" th:action="@{/login}" method="post" novalidate autocomplete="on">
+                <div class="ds-field">
+                    <label for="username" class="form-label">Username <span class="ds-req" aria-hidden="true">*</span></label>
+                    <div class="ds-input-wrap">
+                        <i class="bi bi-person" aria-hidden="true"></i>
+                        <input type="text" id="username" name="username" class="form-control" required maxlength="100"
+                               autocomplete="username" autocapitalize="none" spellcheck="false" autofocus
+                               aria-describedby="username-error" aria-required="true">
+                    </div>
+                    <div class="invalid-feedback" id="username-error" role="alert">Enter your username.</div>
+                </div>
+
+                <div class="ds-field">
+                    <label for="password" class="form-label">Password <span class="ds-req" aria-hidden="true">*</span></label>
+                    <div class="ds-input-wrap">
+                        <i class="bi bi-lock" aria-hidden="true"></i>
+                        <input type="password" id="password" name="password" class="form-control" required maxlength="200"
+                               autocomplete="current-password" aria-describedby="password-error caps-hint" aria-required="true">
+                        <button type="button" class="ds-toggle-pw" id="toggle-password" aria-label="Show password"
+                                aria-controls="password" aria-pressed="false">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback" id="password-error" role="alert">Enter your password.</div>
+                    <div class="ds-hint" id="caps-hint" hidden><i class="bi bi-capslock" aria-hidden="true"></i> Caps Lock is on.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary ds-login-btn" id="login-submit">
+                    <span class="spinner-border spinner-border-sm d-none" aria-hidden="true" id="login-spinner"></span>
+                    <span id="login-label">Sign in</span>
+                </button>
+            </form>
+
+            <p class="ds-login-foot">Authorised use only. Sign-in attempts are logged and rate limited.</p>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/login.js}"></script>
+</body>
+</html>

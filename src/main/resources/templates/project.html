@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/project.css}">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+
+
+
+    <div id="project-root" th:attr="data-project-id=${projectId}">
+
+        <div class="ds-card ds-project-bar">
+            <div class="ds-card-body d-flex flex-wrap align-items-center gap-3">
+                <div class="me-auto">
+                    <div class="ds-project-name" th:text="${projectName}">Project</div>
+                    <div class="ds-project-state">
+                        <span id="project-state-chip" class="ds-chip ds-chip-muted">Loading&hellip;</span>
+                        <span id="project-state-text" class="ds-muted"></span>
+                    </div>
+                </div>
+                <div class="ds-muted">Mapping version <strong id="project-version">0</strong></div>
+                <a class="btn btn-outline-secondary btn-sm" th:href="@{/projects}">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> All projects
+                </a>
+            </div>
+        </div>
+
+        <nav class="ds-stepper" aria-label="Migration steps">
+            <button type="button" class="ds-step" data-step="connections"><span class="ds-step-no">1</span> Connections</button>
+            <button type="button" class="ds-step" data-step="tables"><span class="ds-step-no">2</span> Tables</button>
+            <button type="button" class="ds-step" data-step="mapping"><span class="ds-step-no">3</span> Mapping</button>
+            <button type="button" class="ds-step" data-step="approve"><span class="ds-step-no">4</span> Validate &amp; approve</button>
+            <button type="button" class="ds-step" data-step="preview"><span class="ds-step-no">5</span> Preview</button>
+        </nav>
+
+        <!-- 1. Connections -->
+        <section id="step-connections" class="ds-step-panel" aria-label="Connections">
+            <p class="ds-lede" id="pair-banner">Choose any registered source database and any registered target database. They may be the same product.</p>
+            <div class="row g-3">
+                <div class="col-xl-6"><th:block th:replace="~{fragments/connection-card :: connection-card('source', 'Source database', 'bi-box-arrow-up-right')}"></th:block></div>
+                <div class="col-xl-6"><th:block th:replace="~{fragments/connection-card :: connection-card('target', 'Target database', 'bi-box-arrow-in-down-right')}"></th:block></div>
+            </div>
+            <p class="ds-muted mt-3 mb-0">
+                Source and target can be different database products. Use a read-only account for the source. This
+                application never changes the source, and never drops, truncates or deletes anything in the target.
+            </p>
+        </section>
+
+        <!-- 2. Tables -->
+        <section id="step-tables" class="ds-step-panel" aria-label="Tables" hidden>
+            <div class="ds-card">
+                <div class="ds-card-header"><h2 class="ds-card-title">Choose the tables to migrate</h2></div>
+                <div class="ds-card-body">
+                    <div id="tables-blocked" class="ds-callout ds-callout-warning" hidden>
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        <div>Save both connections first (step 1). After a restart, enter the passwords again.</div>
+                    </div>
+                    <div id="tables-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="source-schema">Source schema</label>
+                                <select class="form-select" id="source-schema"></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="target-schema">Target schema</label>
+                                <select class="form-select" id="target-schema"></select>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-outline-primary" id="tables-load">
+                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Load tables
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="tables-suggest" disabled>
+                                <i class="bi bi-magic" aria-hidden="true"></i> Suggest table pairs by name
+                            </button>
+                        </div>
+
+                        <div class="row g-2 align-items-end mb-2">
+                            <div class="col-md-5">
+                                <label class="form-label" for="pair-source">Source table</label>
+                                <select class="form-select" id="pair-source" disabled></select>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label" for="pair-target">Target table</label>
+                                <select class="form-select" id="pair-target" disabled></select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-outline-primary w-100" id="pair-add" disabled>Add pair</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive mt-3">
+                            <table class="table ds-table align-middle">
+                                <thead><tr><th scope="col">Source table</th><th scope="col">Target table</th><th scope="col">Note</th><th scope="col"><span class="visually-hidden">Remove</span></th></tr></thead>
+                                <tbody id="pairs-body"></tbody>
+                            </table>
+                        </div>
+                        <div id="pairs-empty" class="ds-muted">No table pairs selected yet.</div>
+                        <div class="ds-inline-error mt-2" id="tables-error" role="alert" hidden></div>
+                        <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
+                            <button type="button" class="btn btn-primary" id="tables-save" disabled>
+                                <i class="bi bi-check2" aria-hidden="true"></i> Save selection &amp; read table structure
+                            </button>
+                            <span class="ds-muted" id="tables-save-note">Saving replaces any earlier selection, mapping and approval.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Mapping -->
+        <section id="step-mapping" class="ds-step-panel" aria-label="Mapping" hidden>
+            <div id="mapping-empty" class="ds-card" hidden>
+                <div class="ds-card-body ds-empty">
+                    <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                    <div class="ds-empty-title">No tables selected</div>
+                    <p>Select tables in step 2, then generate mapping suggestions.</p>
+                </div>
+            </div>
+            <div id="mapping-body">
+                <div class="ds-card mb-3">
+                    <div class="ds-card-body d-flex flex-wrap gap-2 align-items-center">
+                        <button type="button" class="btn btn-primary" id="mapping-suggest">
+                            <i class="bi bi-magic" aria-hidden="true"></i> Generate mapping suggestions
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="mapping-accept-all">
+                            <i class="bi bi-check2-all" aria-hidden="true"></i> Accept all clean suggestions
+                        </button>
+                        <div class="ms-auto ds-muted" id="mapping-summary"></div>
+                    </div>
+                </div>
+                <div class="ds-callout ds-callout-info" role="note">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <div>
+                        Suggestions come from fixed rules (names, abbreviations, data types, lengths and keys). They
+                        are <strong>not</strong> applied until you approve the mapping, and the score is a rule of thumb,
+                        not a probability. Nothing is migrated automatically.
+                    </div>
+                </div>
+                <div id="mapping-pairs"></div>
+            </div>
+        </section>
+
+        <!-- 4. Validate & approve -->
+        <section id="step-approve" class="ds-step-panel" aria-label="Validate and approve" hidden>
+            <div class="ds-card">
+                <div class="ds-card-header"><h2 class="ds-card-title">Validate and approve the mapping</h2></div>
+                <div class="ds-card-body">
+                    <p>The server checks that every table and column exists, that no target column is used twice,
+                        that required target columns are mapped and that data types fit. Approval is a separate,
+                        explicit step.</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button type="button" class="btn btn-outline-primary" id="validate-run">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i> Validate mapping
+                        </button>
+                    </div>
+                    <div id="validation-result"></div>
+
+                    <hr>
+                    <div id="approval-current" class="ds-callout ds-callout-success" hidden>
+                        <i class="bi bi-patch-check" aria-hidden="true"></i>
+                        <div id="approval-current-text"></div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="approve-confirm" disabled>
+                        <label class="form-check-label" for="approve-confirm">
+                            I have reviewed every mapping, warning and unmapped column, and I accept this mapping.
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-success" id="approve-run" disabled>
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> Approve Mapping &amp; Continue
+                    </button>
+                    <div class="ds-muted mt-2" id="approve-hint"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Preview -->
+        <section id="step-preview" class="ds-step-panel" aria-label="Preview" hidden>
+            <div class="ds-card">
+                <div class="ds-card-header"><h2 class="ds-card-title">Migration preview</h2></div>
+                <div class="ds-card-body">
+                    <p>The preview re-checks the approval and the current structure of both databases, counts the
+                        source rows and shows what a migration would do. It <strong>writes nothing</strong> to either
+                        database.</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button type="button" class="btn btn-outline-primary" id="preview-run" disabled>
+                            <i class="bi bi-eye" aria-hidden="true"></i> Run migration preview
+                        </button>
+                        <button type="button" class="btn btn-primary" id="migration-start" disabled>
+                            <i class="bi bi-rocket-takeoff" aria-hidden="true"></i> Start migration
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" id="migration-cancel" disabled>
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="migration-validate" disabled>
+                            Validate results
+                        </button>
+                    </div>
+                    <div class="ds-muted mb-3" id="preview-hint"></div>
+                    <div id="preview-result"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/project.js}"></script>
+</th:block>
+</body>
+</html>

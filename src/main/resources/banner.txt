@@ -1,0 +1,11 @@
+${AnsiColor.BRIGHT_CYAN}
+__      __   ______    _   _    _  __               _______
+\ \    / /  |  ____|  | \ | |  | |/ /      /\      |__   __|
+ \ \  / /   | |__     |  \| |  | ' /      /  \        | |
+  \ \/ /    |  __|    | . ` |  |  <      / /\ \       | |
+   \  /     | |____   | |\  |  | . \    / ____ \      | |
+    \/      |______|  |_| \_|  |_|\_\  /_/    \_\     |_|
+${AnsiColor.BRIGHT_BLUE}
+  DataSphere Migration Studio  v${datasphere.version}
+${AnsiColor.BRIGHT_GREEN}  Connect. Map. Validate. Migrate.
+${AnsiColor.DEFAULT}  Spring Boot ${spring-boot.version}

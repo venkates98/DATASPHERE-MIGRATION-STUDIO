@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Connection form, used for both roles -->
+    <th:block th:fragment="connection-card(role, title, icon)">
+        <section class="ds-card h-100" th:attr="aria-labelledby=${role} + '-heading'">
+            <div class="ds-card-header">
+                <h2 th:id="${role} + '-heading'" class="ds-card-title">
+                    <i class="bi" th:classappend="${icon}" aria-hidden="true"></i> <span th:text="${title}">Source</span>
+                </h2>
+                <span class="ds-chip ds-chip-muted" th:id="${role} + '-status'">Not saved</span>
+            </div>
+            <div class="ds-card-body">
+                <form th:id="${role} + '-form'" class="row g-2" novalidate autocomplete="off"
+                      th:attr="data-role=${role}">
+                    <div class="col-md-6">
+                        <label class="form-label" th:for="${role} + '-type'">Database type</label>
+                        <select class="form-select" th:id="${role} + '-type'" name="type">
+                            <option th:each="t : ${databaseTypes}" th:value="${t.name()}" th:text="${t.label()}"
+                                    th:attr="data-port=${t.defaultPort()},data-db-label=${t.databaseLabel()},data-db-is-schema=${t.databaseIsSchema()}">
+                                SQL Server
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" th:for="${role} + '-host'">Host</label>
+                        <input class="form-control" th:id="${role} + '-host'" name="host" type="text" maxlength="253"
+                               placeholder="db.example.internal">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" th:for="${role} + '-port'">Port</label>
+                        <input class="form-control" th:id="${role} + '-port'" name="port" type="number" min="1" max="65535">
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label" th:for="${role} + '-database'"
+                               th:id="${role} + '-database-label'">Database</label>
+                        <input class="form-control" th:id="${role} + '-database'" name="database" type="text" maxlength="128">
+                    </div>
+                    <div class="col-md-6" th:id="${role} + '-schema-wrap'">
+                        <label class="form-label" th:for="${role} + '-schema'">Schema (optional)</label>
+                        <input class="form-control" th:id="${role} + '-schema'" name="schema" type="text" maxlength="128">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" th:for="${role} + '-username'">User name</label>
+                        <input class="form-control" th:id="${role} + '-username'" name="username" type="text"
+                               maxlength="128" autocomplete="off">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" th:for="${role} + '-password'">Password</label>
+                        <input class="form-control" th:id="${role} + '-password'" name="password" type="password"
+                               maxlength="256" autocomplete="new-password">
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" th:id="${role} + '-trust'" name="trust">
+                            <label class="form-check-label" th:for="${role} + '-trust'">
+                                Trust the server certificate (SQL Server only; use for test servers)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-text" th:id="${role} + '-url-preview'"></div>
+                    </div>
+                    <div class="col-12">
+                        <div class="ds-inline-error" role="alert" th:id="${role} + '-error'" hidden></div>
+                        <div class="ds-inline-ok" role="status" th:id="${role} + '-ok'" hidden></div>
+                    </div>
+                    <div class="col-12 d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-outline-primary" th:id="${role} + '-test'">
+                            <i class="bi bi-lightning-charge" aria-hidden="true"></i> Test connection
+                        </button>
+                        <button type="submit" class="btn btn-primary" th:id="${role} + '-save'">
+                            <i class="bi bi-save" aria-hidden="true"></i> Save connection
+                        </button>
+                    </div>
+                    <div class="col-12 form-text">
+                        The connection is tested before it is saved. The password is kept in memory only; it is never
+                        written to disk.
+                    </div>
+                </form>
+            </div>
+        </section>
+    </th:block>
+</body>
+</html>

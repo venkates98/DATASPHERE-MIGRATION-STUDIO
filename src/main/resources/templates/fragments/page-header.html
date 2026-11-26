@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="page-header" class="ds-page-header">
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb ds-breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Home</a></li>
+            <li class="breadcrumb-item" th:if="${activeMenu != null and activeMenu.group.label != 'Overview'}"
+                th:text="${activeMenu.group.label}">Group</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${pageTitle}">Page</li>
+        </ol>
+    </nav>
+    <h1 class="ds-page-title" th:text="${pageTitle}">Page title</h1>
+    <p class="ds-page-desc" th:if="${pageDescription != null}" th:text="${pageDescription}">Description</p>
+</div>
+</body>
+</html>

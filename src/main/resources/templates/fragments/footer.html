@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="ds-footer">
+    <span><strong th:text="${appName}">DataSphere Migration Studio</strong> <span th:text="'v' + ${appVersion}">v0.1.0</span></span>
+    <span class="ds-footer-note">Projects and mappings are saved on the server without passwords. Job history and counters are not yet persisted and are not a durable audit record.</span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title th:text="${error.code + ' · DataSphere Migration Studio'}">Error · DataSphere Migration Studio</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.min.css}">
+    <link rel="stylesheet" th:href="@{/css/tokens.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="ds-error-body">
+<main class="ds-error-card" id="main-content">
+    <div class="ds-error-icon" aria-hidden="true"><i class="bi bi-exclamation-octagon"></i></div>
+    <p class="ds-error-code"><span th:text="${error.code}">ERR-000</span> · <span th:text="${error.category}">Category</span></p>
+    <h1 class="ds-error-title" th:text="${error.message}">Something went wrong</h1>
+    <p class="ds-error-action" th:text="${error.suggestedAction}">Suggested action</p>
+
+    <ul class="ds-error-issues" th:if="${!error.fieldIssues.isEmpty()}">
+        <li th:each="issue : ${error.fieldIssues}"><strong th:text="${issue.field}">field</strong>: <span th:text="${issue.message}">message</span></li>
+    </ul>
+
+    <ul class="ds-error-issues" th:if="${error.details != null and !error.details.isEmpty()}">
+        <li th:each="detail : ${error.details}" th:text="${detail}">detail</li>
+    </ul>
+
+    <dl class="ds-error-meta">
+        <dt>Correlation ID</dt><dd><code th:text="${error.correlationId}">00000000-0000-0000-0000-000000000000</code></dd>
+        <dt>Time</dt><dd th:text="${error.timestamp}">timestamp</dd>
+    </dl>
+
+    <div class="ds-error-buttons">
+        <a class="btn btn-primary" th:href="@{/dashboard}"><i class="bi bi-house" aria-hidden="true"></i> Go to dashboard</a>
+        <a class="btn btn-outline-secondary" th:href="@{/login}">Sign-in page</a>
+    </div>
+    <p class="ds-error-foot">Technical details are recorded in the protected server log, not shown here.</p>
+</main>
+</body>
+</html>

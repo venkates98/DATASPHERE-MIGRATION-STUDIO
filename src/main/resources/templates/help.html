@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<body>
+<div layout:fragment="content">
+
+    <div class="ds-callout ds-callout-info" role="note">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <div>
+            <strong>Honest by design.</strong>
+            DataSphere reports exactly what it validated, transferred and reconciled. It does not claim 100% accuracy:
+            matching counts do not prove identical values, and a passing preview does not guarantee every record migrates.
+        </div>
+    </div>
+
+    <p class="ds-lede">
+        This page is the in-application user guide. Follow the steps in order. Sidebar items with a phase badge
+        (P3–P7) are documentation only and do not run yet.
+    </p>
+
+    <div class="accordion ds-accordion" id="helpAccordion">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#h-start"
+                        aria-expanded="true" aria-controls="h-start">1. Sign in and open a project</button>
+            </h2>
+            <div id="h-start" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ol class="ds-steps">
+                        <li>Open the application (development default: <code>http://localhost:8080</code>).</li>
+                        <li>Sign in with the administrator account configured for this environment.</li>
+                        <li>Go to <strong>Migration Projects</strong> and click <strong>New project</strong>. Give it a name (for example “Core banking pilot”).</li>
+                        <li>The workspace has five steps: Connections → Tables → Mapping → Validate &amp; approve → Preview.</li>
+                    </ol>
+                    <p class="mb-0 text-muted">The development administrator exists only on your machine. Do not use it in production.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-conn"
+                        aria-expanded="false" aria-controls="h-conn">2. Connect source and target</button>
+            </h2>
+            <div id="h-conn" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <p>Source and target are chosen independently. They may be different products or the same product.</p>
+                    <p>Supported types: Microsoft SQL Server (port 1433), Oracle (1521, service name), PostgreSQL (5432), MySQL (3306). Ports are editable.</p>
+                    <ol class="ds-steps">
+                        <li>On the source card, pick the database type. Host, port, database or Oracle service name, user and password appear. Schema is optional except on MySQL, where the database name is the namespace.</li>
+                        <li>Click <strong>Test connection</strong>. Fix any error (host, port, login, driver, allow-list) before saving.</li>
+                        <li>Click <strong>Save connection</strong>. The password is kept in server memory only; it is never written to disk.</li>
+                        <li>Repeat for the target. Use a least-privilege account. The source should be read-only if your DBA can issue one.</li>
+                    </ol>
+                    <p class="mb-0">After an application restart, open the project and enter both passwords again. Changing a connection to a different database clears the table selection and mapping.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-tables"
+                        aria-expanded="false" aria-controls="h-tables">3. Select tables</button>
+            </h2>
+            <div id="h-tables" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ol class="ds-steps">
+                        <li>Open step <strong>Tables</strong>. Choose a source schema and a target schema (skip empty schemas such as PUBLIC if your objects live elsewhere).</li>
+                        <li>Click <strong>Load tables</strong>, or <strong>Suggest table pairs by name</strong> to match similar table names.</li>
+                        <li>Add pairs so each source table maps to one existing target table. Target tables must already exist; this build does not create them on the server.</li>
+                        <li>Click <strong>Save selection</strong>.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-map"
+                        aria-expanded="false" aria-controls="h-map">4. Review the mapping</button>
+            </h2>
+            <div id="h-map" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ol class="ds-steps">
+                        <li>Click <strong>Generate mapping suggestions</strong>. Suggestions use names, abbreviations, types and keys only — no AI and no sample data.</li>
+                        <li>Read every row: source column, type, suggested target, score, reason, status.</li>
+                        <li>A score around 60 with status <strong>Suggested</strong> usually means an abbreviation match (for example EMP_NM → EMPLOYEE_NAME). Confirm it; the band “needs review” is intentional.</li>
+                        <li>Use Accept, Reject, Clear, the target dropdown, or a conversion (trim, parse number, and so on). Incompatible types stay blocked until you pick a conversion.</li>
+                        <li>Leave a column unmapped if it must not be copied. Required target columns without a mapping will fail validation.</li>
+                    </ol>
+                    <p class="mb-0">The engine never invents columns. One source column maps to at most one target column.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-appr"
+                        aria-expanded="false" aria-controls="h-appr">5. Validate and approve</button>
+            </h2>
+            <div id="h-appr" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ol class="ds-steps">
+                        <li>Open <strong>Validate &amp; approve</strong> and click <strong>Validate mapping</strong>.</li>
+                        <li>Fix errors (duplicates, required unmapped targets, incompatible types, mappings still waiting for review). Warnings (optional unmapped columns) do not block you.</li>
+                        <li>Tick <em>I have reviewed every mapping…</em></li>
+                        <li>Click <strong>Approve Mapping &amp; Continue</strong> and confirm. Approval is stored on the server with version, mapping hash, metadata fingerprint, user and time.</li>
+                    </ol>
+                    <p class="mb-0">Changing the mapping, table list, database type or live table structure withdraws approval. The browser cannot bypass this.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-mig"
+                        aria-expanded="false" aria-controls="h-mig">6. Preview, copy data, validate results</button>
+            </h2>
+            <div id="h-mig" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ol class="ds-steps">
+                        <li><strong>Run migration preview</strong> — re-checks approval, counts source rows, shows INSERT and generated CREATE TABLE text. Writes nothing.</li>
+                        <li><strong>Start migration</strong> — confirm that INSERT into the target is allowed. Rows are copied in batches. The engine never drops, truncates or overwrites existing target rows.</li>
+                        <li>If a later batch fails or you cancel, batches already committed stay in the target.</li>
+                        <li><strong>Validate results</strong> — compares row counts and some null counts. The result is PARTIAL. Matching counts do not prove values are identical.</li>
+                    </ol>
+                    <p class="mb-0 text-muted">Automated tests use in-memory stand-in databases. Verify against your own servers before a production cutover.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-scores"
+                        aria-expanded="false" aria-controls="h-scores">How to read mapping scores</button>
+            </h2>
+            <div id="h-scores" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ul class="ds-list">
+                        <li>90–100 high · 75–89 good · 50–74 needs review · below 50 weak. This is a rule of thumb, not a probability.</li>
+                        <li>Exact name (ignoring case and separators) can reach 100.</li>
+                        <li>Abbreviation or synonym matches cannot earn the “exact name” points, so they often score about 60.</li>
+                        <li>If two targets score almost equally, the row is left as Needs review. You must choose.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-txn"
+                        aria-expanded="false" aria-controls="h-txn">Transactions and cancellation</button>
+            </h2>
+            <div id="h-txn" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ul class="ds-list">
+                        <li>Source and target are separate connections. One transaction cannot cover both databases.</li>
+                        <li>Each INSERT batch is committed on the target. A later failure does not undo earlier batches.</li>
+                        <li>Cancel is honoured at the next batch boundary.</li>
+                        <li>Duplicate keys: fail the batch, or choose skip-duplicates. Existing target rows are never updated.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-security"
+                        aria-expanded="false" aria-controls="h-security">Security and credentials</button>
+            </h2>
+            <div id="h-security" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ul class="ds-list">
+                        <li>Database passwords stay in server memory. They are never logged, shown in errors, or saved in the data folder.</li>
+                        <li>The browser cannot run arbitrary SQL, shell commands or DROP/TRUNCATE.</li>
+                        <li>Production: HTTPS, BCrypt administrator hash from a secret store, host allow-list, least-privilege database accounts.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-limits"
+                        aria-expanded="false" aria-controls="h-limits">Known limitations</button>
+            </h2>
+            <div id="h-limits" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <ul class="ds-list ds-list-warning">
+                        <li>Projects and mappings are saved on disk without passwords. Dashboard counters and login lock-outs are still in memory.</li>
+                        <li>CREATE TABLE SQL is shown in the preview but is not executed. Target tables must already exist.</li>
+                        <li>Oracle: service name only (no SID / TNS). IPv6 hosts are not supported.</li>
+                        <li>MariaDB, DB2 and SQLite are not registered. Every SQL Server / Oracle / PostgreSQL / MySQL pair is PARTIAL SUPPORT until tested on live servers.</li>
+                        <li>Pages with a phase badge in the sidebar document future features and do not run in this build.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h-errors"
+                        aria-expanded="false" aria-controls="h-errors">Error codes</button>
+            </h2>
+            <div id="h-errors" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                <div class="accordion-body">
+                    <p>Every error shows a stable code, a correlation ID and a suggested action. Quote the correlation
+                        ID when asking for help; technical detail is only in the protected server log.</p>
+                    <div class="table-responsive">
+                        <table class="table ds-table">
+                            <thead><tr><th scope="col">Code</th><th scope="col">Category</th><th scope="col">Meaning</th><th scope="col">What to do</th></tr></thead>
+                            <tbody>
+                            <tr th:each="code : ${errorCodes}">
+                                <td class="text-nowrap"><code th:text="${code.code()}">CODE</code></td>
+                                <td th:text="${code.category().label()}">Category</td>
+                                <td th:text="${code.userMessage()}">Message</td>
+                                <td th:text="${code.suggestedAction()}">Action</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3"><div th:replace="~{fragments/guide :: guide(${guide})}"></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+/* DataSphere design tokens — shared by login, application shell and error pages. */
+:root {
+    --ds-navy: #14243a;
+    --ds-navy-2: #1b3150;
+    --ds-blue: #2563eb;
+    --ds-blue-dark: #1d4ed8;
+    --ds-teal: #0f9d91;
+    --ds-bg: #f5f7fb;
+    --ds-surface: #ffffff;
+    --ds-text: #172033;
+    --ds-muted: #667085;
+    --ds-border: #e3e8f0;
+    --ds-success: #15803d;
+    --ds-warning: #b45309;
+    --ds-error: #b42318;
+    --ds-info-bg: #eff4ff;
+    --ds-warning-bg: #fff7ed;
+    --ds-sidebar-w: 296px;
+    --ds-radius: 10px;
+    --ds-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+    --ds-focus: 0 0 0 3px rgba(37, 99, 235, .35);
+    --ds-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Bootstrap overrides */
+    --bs-primary: #2563eb;
+    --bs-primary-rgb: 37, 99, 235;
+    --bs-success: #15803d;
+    --bs-success-rgb: 21, 128, 61;
+    --bs-warning: #b45309;
+    --bs-warning-rgb: 180, 83, 9;
+    --bs-danger: #b42318;
+    --bs-danger-rgb: 180, 35, 24;
+    --bs-body-color: #172033;
+    --bs-body-bg: #f5f7fb;
+    --bs-body-font-family: var(--ds-font);
+    --bs-link-color: #1d4ed8;
+    --bs-link-hover-color: #1e40af;
+    --bs-border-color: #e3e8f0;
+}
+
+body {
+    font-family: var(--ds-font);
+    color: var(--ds-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.btn-primary {
+    --bs-btn-bg: #2563eb;
+    --bs-btn-border-color: #2563eb;
+    --bs-btn-hover-bg: #1d4ed8;
+    --bs-btn-hover-border-color: #1d4ed8;
+    --bs-btn-active-bg: #1e40af;
+    --bs-btn-active-border-color: #1e40af;
+    --bs-btn-disabled-bg: #2563eb;
+    --bs-btn-disabled-border-color: #2563eb;
+    --bs-btn-focus-shadow-rgb: 37, 99, 235;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #1d4ed8;
+    --bs-btn-border-color: #2563eb;
+    --bs-btn-hover-bg: #2563eb;
+    --bs-btn-hover-border-color: #2563eb;
+    --bs-btn-active-bg: #1d4ed8;
+    --bs-btn-active-border-color: #1d4ed8;
+    --bs-btn-focus-shadow-rgb: 37, 99, 235;
+}
+
+:focus-visible {
+    outline: 2px solid var(--ds-blue);
+    outline-offset: 2px;
+}
+
+.ds-skip-link {
+    position: absolute;
+    left: -999px;
+    top: 8px;
+    z-index: 3000;
+    background: var(--ds-navy);
+    color: #fff;
+    padding: .5rem 1rem;
+    border-radius: 6px;
+}
+
+.ds-skip-link:focus {
+    left: 8px;
+    color: #fff;
+}
+
+/* Logo (SVG, classes only so it works under a strict CSP) */
+.ds-logo { width: 40px; height: 40px; flex: 0 0 auto; }
+.ds-logo-ring { stroke: #5b8def; }
+.ds-logo-disc-top { fill: #8fb0ff; }
+.ds-logo-body { fill: #2563eb; }
+.ds-logo-body-teal { fill: #0f9d91; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+    }
+}

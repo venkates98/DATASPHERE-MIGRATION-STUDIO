@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<body>
+<div layout:fragment="content">
+    <div th:replace="~{fragments/guide :: availability}"></div>
+    <div th:replace="~{fragments/guide :: operations(${guide})}"></div>
+    <div th:replace="~{fragments/guide :: guide(${guide})}"></div>
+</div>
+</body>
+</html>

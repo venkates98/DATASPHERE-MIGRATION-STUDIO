@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Availability banner for pages whose backend is delivered in a later phase -->
+<div th:fragment="availability" th:unless="${activeMenu == null or activeMenu.implemented}"
+     class="ds-callout ds-callout-warning" role="status">
+    <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+    <div>
+        <strong>Not available in this build.</strong>
+        This page documents the feature. Its operations are disabled because the backend is delivered in
+        development phase <span th:text="${activeMenu.plannedPhase}">2</span> and has not been implemented and verified yet.
+    </div>
+</div>
+
+<!-- Standard six-part explanation shared by every menu page -->
+<section th:fragment="guide(guide)" class="ds-card" aria-labelledby="guide-heading">
+    <div class="ds-card-header"><h2 id="guide-heading" class="ds-card-title">About this page</h2></div>
+    <div class="ds-card-body">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <h3 class="ds-h3"><i class="bi bi-info-circle" aria-hidden="true"></i> What it does</h3>
+                <p th:text="${guide.whatItDoes}">What it does.</p>
+                <h3 class="ds-h3"><i class="bi bi-clock-history" aria-hidden="true"></i> When to use it</h3>
+                <p th:text="${guide.whenToUse}">When to use.</p>
+                <h3 class="ds-h3"><i class="bi bi-ui-checks" aria-hidden="true"></i> Required inputs</h3>
+                <ul class="ds-list">
+                    <li th:each="input : ${guide.requiredInputs}" th:text="${input}">Input</li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="ds-h3"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Potential risks</h3>
+                <ul class="ds-list ds-list-warning">
+                    <li th:each="risk : ${guide.risks}" th:text="${risk}">Risk</li>
+                </ul>
+                <h3 class="ds-h3"><i class="bi bi-check2-circle" aria-hidden="true"></i> Expected results</h3>
+                <ul class="ds-list">
+                    <li th:each="result : ${guide.expectedResults}" th:text="${result}">Result</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Operations: disabled operations always show why they are unavailable (visible text, not only a tooltip) -->
+<section th:fragment="operations(guide)" th:if="${!guide.operations.isEmpty()}" class="ds-card"
+         aria-labelledby="operations-heading">
+    <div class="ds-card-header"><h2 id="operations-heading" class="ds-card-title">Available operations</h2></div>
+    <div class="ds-card-body">
+        <ul class="ds-op-list">
+            <li th:each="op, stat : ${guide.operations}" class="ds-op">
+                <div>
+                    <button type="button" class="btn btn-outline-primary" th:disabled="${!op.enabled}"
+                            th:attr="aria-describedby='op-reason-' + ${stat.index}">
+                        <i class="bi" th:classappend="${op.icon}" aria-hidden="true"></i>
+                        <span th:text="${op.label}">Operation</span>
+                    </button>
+                </div>
+                <div class="ds-op-text">
+                    <div th:text="${op.description}">Description</div>
+                    <div th:if="${!op.enabled}" th:id="'op-reason-' + ${stat.index}" class="ds-op-reason">
+                        <i class="bi bi-lock" aria-hidden="true"></i>
+                        <span th:text="${op.disabledReason}">Reason</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar" id="ds-sidebar" class="ds-sidebar" aria-label="Application sidebar">
+    <div class="ds-sidebar-brand">
+        <svg th:replace="~{fragments/brand :: logo}"></svg>
+        <div class="ds-brand-text">
+            <span class="ds-brand-name">DataSphere</span>
+            <span class="ds-brand-sub">Migration Studio</span>
+            <span class="ds-version" th:text="'v' + ${appVersion}">v0.1.0</span>
+        </div>
+    </div>
+
+    <nav class="ds-nav" aria-label="Main menu">
+        <div th:each="group : ${menuGroups}" class="ds-nav-group">
+            <div class="ds-nav-group-label" th:text="${group.label}">Group</div>
+            <ul class="ds-nav-list">
+                <li th:each="item : ${group.items}">
+                    <a class="ds-nav-link" th:href="@{${item.path}}"
+                       th:classappend="${activeMenu == item} ? 'active'"
+                       th:attr="aria-current=${activeMenu == item} ? 'page' : null, title=${item.title}">
+                        <i class="bi" th:classappend="${item.icon}" aria-hidden="true"></i>
+                        <span class="ds-nav-text" th:text="${item.title}">Item</span>
+                        <span th:unless="${item.implemented}" class="ds-nav-badge"
+                              th:title="'Delivered in development phase ' + ${item.plannedPhase}"
+                              th:text="'P' + ${item.plannedPhase}">P2</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="ds-nav-group">
+            <div class="ds-nav-group-label">Session</div>
+            <form th:action="@{/logout}" method="post" class="ds-nav-logout"
+                  data-ds-confirm="You will be signed out of DataSphere Migration Studio and will need to sign in again to continue."
+                  data-ds-confirm-title="Sign out?" data-ds-confirm-label="Sign out" data-ds-confirm-style="primary">
+                <button type="submit" class="ds-nav-link" title="Logout">
+                    <i class="bi bi-box-arrow-left" aria-hidden="true"></i>
+                    <span class="ds-nav-text">Logout</span>
+                </button>
+            </form>
+        </div>
+    </nav>
+</aside>
+</body>
+</html>

@@ -1,0 +1,85 @@
+/* Migration project workspace. Classes only (no inline styles) so the strict CSP stays intact. */
+
+.ds-muted { color: var(--ds-muted); font-size: .88rem; }
+.ds-callout-success { background: #ecfdf3; border-color: #abefc6; color: #14532d; }
+.ds-chip-success { background: #dcfae6; color: #14532d; border: 1px solid #abefc6; }
+.ds-chip-warning { background: #fef0c7; color: #7a2e0e; border: 1px solid #fedf89; }
+.ds-chip-danger { background: #fee4e2; color: #7a271a; border: 1px solid #fecdca; }
+
+.ds-inline-error {
+    background: #fef3f2; border: 1px solid #fecdca; color: #7a271a;
+    border-radius: 8px; padding: .55rem .8rem; font-size: .88rem; white-space: pre-line;
+}
+.ds-inline-ok {
+    background: #ecfdf3; border: 1px solid #abefc6; color: #14532d;
+    border-radius: 8px; padding: .55rem .8rem; font-size: .88rem; white-space: pre-line;
+}
+.ds-inline-error[hidden], .ds-inline-ok[hidden] { display: none; }
+
+/* Project bar and stepper */
+.ds-project-bar { margin-bottom: 1rem; }
+.ds-project-name { font-size: 1.15rem; font-weight: 700; color: var(--ds-navy); }
+.ds-project-state { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-top: .2rem; }
+
+.ds-stepper { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.ds-step {
+    display: inline-flex; align-items: center; gap: .55rem;
+    background: var(--ds-surface); border: 1px solid var(--ds-border); border-radius: 999px;
+    padding: .4rem .95rem .4rem .45rem; font-weight: 600; font-size: .9rem; color: var(--ds-muted);
+}
+.ds-step:hover { border-color: var(--ds-blue); color: var(--ds-text); }
+.ds-step-no {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.55rem; height: 1.55rem; border-radius: 50%; background: #eef1f6; color: #475467; font-size: .8rem;
+}
+.ds-step.is-active { border-color: var(--ds-blue); color: var(--ds-navy); box-shadow: var(--ds-shadow); }
+.ds-step.is-active .ds-step-no { background: var(--ds-blue); color: #fff; }
+.ds-step.is-done .ds-step-no { background: var(--ds-success); color: #fff; }
+.ds-step-panel[hidden] { display: none; }
+
+/* Mapping tables */
+.ds-pair { margin-bottom: 1.25rem; }
+.ds-pair-meta { display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: .88rem; color: var(--ds-muted); }
+.ds-pair-meta strong { color: var(--ds-text); }
+.ds-map-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .75rem 0; }
+.ds-map-toolbar .form-control, .ds-map-toolbar .form-select { max-width: 240px; }
+
+.ds-map-table td { vertical-align: top; }
+.ds-map-table .ds-col-name { font-weight: 600; word-break: break-all; }
+.ds-map-table .ds-col-type { color: var(--ds-muted); font-size: .8rem; }
+.ds-map-table select.form-select { min-width: 190px; font-size: .85rem; }
+.ds-map-reasons { margin: 0; padding-left: 1.05rem; font-size: .8rem; color: #344054; }
+.ds-map-warnings { margin: .25rem 0 0; padding-left: 1.05rem; font-size: .8rem; color: var(--ds-warning); }
+.ds-map-actions { display: flex; gap: .25rem; flex-wrap: nowrap; }
+.ds-map-conv { margin-top: .35rem; display: flex; gap: .35rem; flex-wrap: wrap; align-items: center; }
+.ds-map-conv .form-select, .ds-map-conv .form-control { font-size: .78rem; min-width: 120px; max-width: 200px; }
+tr.ds-row-unmapped td { background: #fafbfc; }
+tr.ds-row-attention td { background: #fffbf5; }
+tr.ds-row-error td { background: #fff6f5; }
+
+.ds-key { font-size: .68rem; font-weight: 700; padding: .05rem .35rem; border-radius: 4px; background: #e0e7ff; color: #3730a3; margin-left: .3rem; }
+
+.ds-score { display: inline-flex; flex-direction: column; align-items: center; min-width: 4.2rem; }
+.ds-score-num { font-weight: 700; font-size: .95rem; }
+.ds-score-label { font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.ds-score-high .ds-score-num, .ds-score-high .ds-score-label { color: var(--ds-success); }
+.ds-score-good .ds-score-num, .ds-score-good .ds-score-label { color: #0b6e8a; }
+.ds-score-review .ds-score-num, .ds-score-review .ds-score-label { color: var(--ds-warning); }
+.ds-score-weak .ds-score-num, .ds-score-weak .ds-score-label { color: var(--ds-error); }
+.ds-score-none .ds-score-num, .ds-score-none .ds-score-label { color: var(--ds-muted); }
+
+.ds-unmapped-list { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.ds-unmapped-list li { background: #eef1f6; border-radius: 6px; padding: .15rem .5rem; font-size: .8rem; }
+
+/* Validation report */
+.ds-issues { list-style: none; margin: 0 0 1rem; padding: 0; display: flex; flex-direction: column; gap: .4rem; }
+.ds-issue { display: flex; gap: .6rem; align-items: flex-start; border: 1px solid var(--ds-border); border-radius: 8px; padding: .5rem .75rem; font-size: .88rem; background: var(--ds-surface); }
+.ds-issue .bi { margin-top: .1rem; }
+.ds-issue-error { border-color: #fecdca; background: #fef3f2; }
+.ds-issue-error .bi { color: var(--ds-error); }
+.ds-issue-warning { border-color: #fedf89; background: #fffcf5; }
+.ds-issue-warning .bi { color: var(--ds-warning); }
+.ds-issue-info .bi { color: var(--ds-blue); }
+.ds-issue-code { font-size: .7rem; color: var(--ds-muted); display: block; }
+
+.ds-sql { background: #101828; color: #e4e7ec; border-radius: 8px; padding: .75rem 1rem; font-size: .8rem; white-space: pre-wrap; word-break: break-all; margin: 0; }

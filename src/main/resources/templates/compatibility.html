@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<body>
+<div layout:fragment="content">
+    <p class="ds-lede">
+        This matrix is generated from the registered database adapters and type-conversion rules.
+        A pair is never marked fully ready only because both drivers exist. Data movement is tested
+        against in-memory stand-in databases, not live vendor servers.
+    </p>
+    <div class="table-responsive">
+        <table class="table ds-table" id="compat-table">
+            <thead>
+            <tr>
+                <th>Source</th>
+                <th>Target</th>
+                <th>Overall</th>
+                <th>Connect</th>
+                <th>Discover</th>
+                <th>Map</th>
+                <th>Convert</th>
+                <th>Schema SQL</th>
+                <th>Copy data</th>
+                <th>Validate</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div id="compat-notes" class="ds-muted mt-3"></div>
+    <div th:replace="~{fragments/guide :: guide(${guide})}"></div>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/compatibility.js}"></script>
+</th:block>
+</body>
+</html>
